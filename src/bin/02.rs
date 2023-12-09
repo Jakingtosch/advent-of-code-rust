@@ -35,6 +35,14 @@ impl Game {
         reds
     }
 
+    fn get_minimum_of_color(color_vec: Vec<u32>) -> u32 {
+        color_vec.iter().max().unwrap().clone()
+    }
+
+    fn get_play_power(&self) -> u32 {
+        Game::get_minimum_of_color(self.get_blue()) * Game::get_minimum_of_color(self.get_red()) * Game::get_minimum_of_color(self.get_green())
+    }
+
     fn is_green_in_limit(&self) -> bool {
         return self.get_green().iter().all( |x| x.clone() <= LIMIT_GREEN);
     }
@@ -44,9 +52,8 @@ impl Game {
     }
 
     fn is_red_in_limit(&self) -> bool {
-        return self.get_red().iter().all( |x| x.clone()  <= LIMIT_RED);
+        return self.get_red().iter().all(|x| x.clone() <= LIMIT_RED);
     }
-
     fn is_game_in_limit(&self) -> bool {
         let green_ok = self.is_green_in_limit();
         let red_ok = self.is_red_in_limit();
@@ -112,7 +119,10 @@ pub fn part_one(input: &str) -> Option<u32> {
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    None
+    let games: Vec<Game> = input.lines().map(|line| Game::deserialize(line)).collect();
+
+    let game_powers: Vec<u32> = games.iter().map(|this_game| this_game.get_play_power()).collect();
+    Some(game_powers.into_iter().sum())
 }
 
 
